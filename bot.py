@@ -3,6 +3,7 @@ import io
 import os
 import threading
 import time
+from flask import Flask
 import matplotlib
 import matplotlib.pyplot as plt
 import telebot
@@ -12,8 +13,12 @@ from tradingview_ta import Interval, TA_Handler
 # Налаштування matplotlib для роботи без монітора
 matplotlib.use("Agg")
 
-# Безпечне отримання токена через змінні середовища (немає ризику блокування на GitHub)
+# Безпечне отримання токена та перевірка в логах
 TOKEN = os.getenv("BOT_TOKEN")
+print(
+    f"ПЕРЕВІРКА ТОКЕНА: {TOKEN[:5] if TOKEN else 'ВІДСУТНІЙ'}... (довжина:"
+    f" {len(TOKEN) if TOKEN else 0})"
+)
 bot = telebot.TeleBot(TOKEN)
 
 # Список активів
@@ -54,7 +59,6 @@ user_stats = {}
 
 
 def generate_chart_image(pair, current_price, ema50):
-  """Функція для малювання та збереження міні-графіка у пам'яті"""
   plt.figure(figsize=(6, 3.5), facecolor="#1e1e1e")
   ax = plt.axes()
   ax.set_facecolor("#121212")
@@ -68,8 +72,7 @@ def generate_chart_image(pair, current_price, ema50):
         + (i - 5) * (current_price * 0.0005)
         for i in range(10)
     ]
-    y[-1] = current_price  # Точна поточна ціна в кінці
-
+    y[-1] = current_price
     ema_line = [ema50] * 10
 
     ax.plot(
@@ -367,6 +370,24 @@ def handle_trade_result(call):
   bot.answer_callback_query(call.id, "Результат збережено!")
 
 
+# Міні-вебсервер на Flask для Render
+app = Flask("")
+
+
+@app.route("/")
+def home():
+  return "Bot is active and running!"
+
+
+def run_web():
+  port = int(os.environ.get("PORT", 8080))
+  app.run(host="0.0.0.0", port=port)
+
+
 if __name__ == "__main__":
-  print("Бот запущено успішно!")
+  web_thread = threading.Thread(target=run_web)
+  web_thread.start()
+
+  print("Бот та вебсервер запущено успішно!")
   bot.infinity_polling()
+      
