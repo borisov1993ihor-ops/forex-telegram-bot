@@ -379,15 +379,16 @@ def home():
   return "Bot is active and running!"
 
 
-def run_web():
+if __name__ == "__main__":
+  # Запускаємо телеграм-бота у фоновому потоці
+  bot_thread = threading.Thread(
+      target=lambda: bot.infinity_polling(none_stop=True)
+  )
+  bot_thread.daemon = True
+  bot_thread.start()
+  print("Бот запущено у фоні!")
+
+  # Flask запускаємо в основному потоці для відкриття порту Render
   port = int(os.environ.get("PORT", 8080))
   app.run(host="0.0.0.0", port=port)
-
-
-if __name__ == "__main__":
-  web_thread = threading.Thread(target=run_web)
-  web_thread.start()
-
-  print("Бот та вебсервер запущено успішно!")
-  bot.infinity_polling()
-      
+    
