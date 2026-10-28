@@ -21,7 +21,7 @@ print(
 )
 bot = telebot.TeleBot(TOKEN)
 
-# Новий оновлений список активів (Forex)
+# Оновлений список пар за вашим запитом
 ASSETS = {
     "AUDJPY": {"screener": "forex", "exchange": "FX"},
     "EURUSD": {"screener": "forex", "exchange": "FX"},
@@ -122,10 +122,10 @@ def check_news_alert():
       or (current_hour == 17 and current_minute <= 30)
   ):
     return (
-        "⚠️ **УВАГА (НОВИННИЙ ФОН):** Зараз час можливого виходу важливих"
+        "⚠️ УВАГА (НОВИННИЙ ФОН): Зараз час можливого виходу важливих"
         " економічних новин! Волатильність підвищена."
     )
-  return "✅ **Новинний фон:** Спокійно. Значних новинних ризиків немає."
+  return "✅ Новинний фон: Спокійно. Значних новинних ризиків немає."
 
 
 def get_assets_keyboard():
@@ -142,9 +142,8 @@ def get_assets_keyboard():
 def send_welcome(message):
   bot.send_message(
       message.chat.id,
-      "🤖 *Вітаю у торговій системі!*\n\n"
-      "📈 Оберіть актив для технічного аналізу нижче:",
-      parse_mode="Markdown",
+      "🤖 Вітаю у торговій системі!\n\n📈 Оберіть актив для технічного аналізу"
+      " нижче:",
       reply_markup=get_assets_keyboard(),
   )
 
@@ -165,15 +164,15 @@ def send_statistics(chat_id):
   winrate = (wins / total * 100) if total > 0 else 0
 
   response = (
-      f"📊 *СТАТИСТИКА ВАШИХ УГОД*\n"
+      f"📊 СТАТИСТИКА ВАШИХ УГОД\n"
       f"━━━━━━━━━━━━━━━━━━━\n"
-      f"✅ Вдалих (Профіт): `{wins}`\n"
-      f"❌ Невдалих (Збиток): `{losses}`\n"
-      f"📋 Всього угод: `{total}`\n"
-      f"🎯 Вінрейт (Winrate): `{winrate:.1f}%`\n"
+      f"✅ Вдалих (Профіт): {wins}\n"
+      f"❌ Невдалих (Збиток): {losses}\n"
+      f"📋 Всього угод: {total}\n"
+      f"🎯 Вінрейт (Winrate): {winrate:.1f}%\n"
       f"━━━━━━━━━━━━━━━━━━━"
   )
-  bot.send_message(chat_id, response, parse_mode="Markdown")
+  bot.send_message(chat_id, response)
 
 
 @bot.message_handler(
@@ -199,8 +198,7 @@ def choose_pair(message):
 
   bot.send_message(
       chat_id,
-      f"💎 Обраний актив: *{message.text}*\n\n⏳ Тепер оберіть період угоди:",
-      parse_mode="Markdown",
+      f"💎 Обраний актив: {message.text}\n\n⏳ Тепер оберіть період угоди:",
       reply_markup=markup,
   )
 
@@ -224,9 +222,7 @@ def choose_timeframe(message):
   duration_seconds = tf_data["seconds"]
 
   bot.send_message(
-      chat_id,
-      f"🔍 Малюю графік та аналізую рівні для *{pair}* ({tf_name})...",
-      parse_mode="Markdown",
+      chat_id, f"🔍 Малюю графік та аналізую рівні для {pair} ({tf_name})..."
   )
 
   try:
@@ -259,62 +255,59 @@ def choose_timeframe(message):
     ):
       if current_price > ema50:
         sr_analysis = (
-            "• *Рівні (Підтримка/Опір):* Ціна вище EMA 50. Лінія EMA 50 діє як"
-            " динамічна **зона підтримки**."
+            "• Рівні (Підтримка/Опір): Ціна вище EMA 50. Лінія EMA 50 діє як"
+            " динамічна зона підтримки."
         )
       else:
         sr_analysis = (
-            "• *Рівні (Підтримка/Опір):* Ціна нижче EMA 50. Лінія EMA 50 діє як"
-            " динамічна **зона опору**."
+            "• Рівні (Підтримка/Опір): Ціна нижче EMA 50. Лінія EMA 50 діє як"
+            " динамічна зона опору."
         )
     else:
-      sr_analysis = "• *Рівні (Підтримка/Опір):* Дані EMA 50 недоступні."
+      sr_analysis = "• Рівні (Підтримка/Опір): Дані EMA 50 недоступні."
 
     if "BUY" in rec:
       signal_emoji = "🟢"
       direction = "ВГОРУ (CALL)"
       reason = (
-          f"• *Індикатори:* Переважання покупців (BUY: {buy}).\n{sr_analysis}\n•"
-          " *Прогноз:* Очікується рух ціни вгору."
+          f"• Індикатори: Переважання покупців (BUY: {buy}).\n{sr_analysis}\n•"
+          " Прогноз: Очікується рух ціни вгору."
       )
     elif "SELL" in rec:
       signal_emoji = "🔴"
       direction = "ВНИЗ (PUT)"
       reason = (
-          f"• *Індикатори:* Тиск продавців (SELL: {sell}).\n{sr_analysis}\n•"
-          " *Прогноз:* Очікується зниження ціни вниз."
+          f"• Індикатори: Тиск продавців (SELL: {sell}).\n{sr_analysis}\n•"
+          " Прогноз: Очікується зниження ціни вниз."
       )
     else:
       signal_emoji = "🟡"
       direction = "УТРИМАТИСЬ (ФЛЕТ)"
       reason = (
-          f"• *Стан ринку:* Рівновага індикаторів.\n{sr_analysis}\n• *Прогноз:"
+          f"• Стан ринку: Рівновага індикаторів.\n{sr_analysis}\n• Прогноз:"
           " Чіткого тренду немає."
       )
 
     news_status = check_news_alert()
 
     response = (
-        f"{signal_emoji} *ТОРГОВИЙ СИГНАЛ*\n"
+        f"{signal_emoji} ТОРГОВИЙ СИГНАЛ\n"
         f"━━━━━━━━━━━━━━━━━━━\n"
-        f"📊 *Актив:* `{pair}`\n"
-        f"💵 *Поточна ціна:* `{current_price_str}`\n"
-        f"⏱ *Період угоди:* `{tf_name}`\n\n"
-        f"🎯 *Рекомендація:* *{direction}*\n\n"
-        f"📝 *Аналіз та рівні:*\n{reason}\n\n"
+        f"📊 Актив: {pair}\n"
+        f"💵 Поточна ціна: {current_price_str}\n"
+        f"⏱ Період угоди: {tf_name}\n\n"
+        f"🎯 Рекомендація: {direction}\n\n"
+        f"📝 Аналіз та рівні:\n{reason}\n\n"
         f"{news_status}\n"
         f"━━━━━━━━━━━━━━━━━━━\n"
-        f"⏳ *Таймер запущено!* Бот нагадає за {tf_name} для введення результату."
+        f"⏳ Таймер запущено! Бот нагадає за {tf_name} для введення результату."
     )
 
     chart_buffer = generate_chart_image(pair, current_price, ema50)
 
     bot.send_photo(chat_id, photo=chart_buffer)
     bot.send_message(
-        chat_id,
-        response,
-        parse_mode="Markdown",
-        reply_markup=get_assets_keyboard(),
+        chat_id, response, reply_markup=get_assets_keyboard()
     )
 
     def trigger_feedback():
@@ -329,9 +322,8 @@ def choose_timeframe(message):
 
       bot.send_message(
           chat_id,
-          f"🔔 *Час угоди завершився!*\n\n📊 Актив: `{pair}`"
+          f"🔔 Час угоди завершився!\n\n📊 Актив: {pair}"
           f" ({tf_name})\nЯк закрилася угода?",
-          parse_mode="Markdown",
           reply_markup=markup_inline,
       )
 
@@ -341,9 +333,8 @@ def choose_timeframe(message):
   except Exception as e:
     bot.send_message(
         chat_id,
-        f"❌ *Помилка при аналізі:* `{e}`\n(Можливо, ринок цього активу наразі"
+        f"❌ Помилка при аналізі: {e}\n(Можливо, ринок цього активу наразі"
         " закритий).",
-        parse_mode="Markdown",
         reply_markup=get_assets_keyboard(),
     )
 
@@ -359,16 +350,15 @@ def handle_trade_result(call):
 
   if result_type == "win":
     user_stats[target_chat_id]["wins"] += 1
-    text_res = "✅ Угоду зараховано як **ПРОФІТ** (+)"
+    text_res = "✅ Угоду зараховано як ПРОФІТ (+)"
   else:
     user_stats[target_chat_id]["losses"] += 1
-    text_res = "❌ Угоду зараховано як **ЗБИТОК** (-)"
+    text_res = "❌ Угоду зараховано як ЗБИТОК (-)"
 
   bot.edit_message_text(
       chat_id=call.message.chat.id,
       message_id=call.message.message_id,
       text=f"{call.message.text}\n\n{text_res}",
-      parse_mode="Markdown",
   )
 
   send_statistics(target_chat_id)
@@ -396,4 +386,4 @@ if __name__ == "__main__":
   # Flask запускаємо в основному потоці для відкриття порту Render
   port = int(os.environ.get("PORT", 8080))
   app.run(host="0.0.0.0", port=port)
-    
+      
