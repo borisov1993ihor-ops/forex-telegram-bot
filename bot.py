@@ -21,22 +21,27 @@ print(
 )
 bot = telebot.TeleBot(TOKEN)
 
-# Список активів
+# Новий оновлений список активів (Forex)
 ASSETS = {
+    "AUDJPY": {"screener": "forex", "exchange": "FX"},
     "EURUSD": {"screener": "forex", "exchange": "FX"},
+    "GBPAUD": {"screener": "forex", "exchange": "FX"},
+    "AUDCHF": {"screener": "forex", "exchange": "FX"},
+    "EURJPY": {"screener": "forex", "exchange": "FX"},
+    "EURCHF": {"screener": "forex", "exchange": "FX"},
+    "EURGBP": {"screener": "forex", "exchange": "FX"},
+    "USDCAD": {"screener": "forex", "exchange": "FX"},
     "GBPUSD": {"screener": "forex", "exchange": "FX"},
     "USDJPY": {"screener": "forex", "exchange": "FX"},
-    "AUDUSD": {"screener": "forex", "exchange": "FX"},
-    "USDCAD": {"screener": "forex", "exchange": "FX"},
-    "USDCHF": {"screener": "forex", "exchange": "FX"},
-    "NZDUSD": {"screener": "forex", "exchange": "FX"},
-    "EURGBP": {"screener": "forex", "exchange": "FX"},
-    "EURJPY": {"screener": "forex", "exchange": "FX"},
+    "AUDCAD": {"screener": "forex", "exchange": "FX"},
     "GBPJPY": {"screener": "forex", "exchange": "FX"},
-    "EURAUD": {"screener": "forex", "exchange": "FX"},
-    "XAUUSD": {"screener": "forex", "exchange": "OANDA"},
-    "BTCUSD": {"screener": "crypto", "exchange": "BINANCE"},
-    "ETHUSD": {"screener": "crypto", "exchange": "BINANCE"},
+    "AUDUSD": {"screener": "forex", "exchange": "FX"},
+    "CADJPY": {"screener": "forex", "exchange": "FX"},
+    "CADCHF": {"screener": "forex", "exchange": "FX"},
+    "USDCHF": {"screener": "forex", "exchange": "FX"},
+    "CHFJPY": {"screener": "forex", "exchange": "FX"},
+    "GBPCAD": {"screener": "forex", "exchange": "FX"},
+    "GBPCHF": {"screener": "forex", "exchange": "FX"},
 }
 
 # Таймфрейми
